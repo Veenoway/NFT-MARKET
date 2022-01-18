@@ -46,6 +46,13 @@ contract nftMarket is ReentrancyGuard {
     function getListingPrice() public view returns(uint) {
         return listingPrice;
     }
+
+    function setListingPrice(uint _price) public returns(uint){
+        if (msg.sender == address(this) ){
+            listingPrice = _price;
+        }
+        return listingPrice;
+    }
     
 
     /// @notice function to create market item
@@ -133,7 +140,7 @@ contract nftMarket is ReentrancyGuard {
         }
 
         /// @notice fethc list of NFTS owned/bought by this user
-        function myNfts() public view returns(MarketItem[] memory) {
+        function fetchMyNfts() public view returns(MarketItem[] memory) {
             //get total number of items ever created
             uint totalItemCount = _itemIds.current();
             uint itemCount = 0;
@@ -151,6 +158,35 @@ contract nftMarket is ReentrancyGuard {
             for (uint i=0;i<totalItemCount;i++){
 
                 if(idMarketItem[i+1].owner == msg.sender) {
+
+                    uint currentId = idMarketItem[i + 1];
+                    MarketItem storage currentItem = idMarketItem[currentId];
+                    items[currentIndex] = currentItem;
+                    currentIndex += 1;
+                }
+            }
+            return items;
+        }
+
+         /// @notice fetch list of NFTS created by this user
+        function fetchItemsCreated() public view returns(MarketItem[] memory) {
+            //get total number of items ever created
+            uint totalItemCount = _itemIds.current();
+            uint itemCount = 0;
+            uint currentIntdex = 0;
+
+            for(uint i=0;i<totalItemCount;i++){
+                // get only the item that this user as bought/is the owner
+                if(idMarketItem[i+1].seller == msg.sender) {
+                    itemCount += 1;
+                }
+            }
+
+            MarketItem[] memory items = new MarketItem[](itemCount);
+
+            for (uint i=0;i<totalItemCount;i++){
+
+                if(idMarketItem[i+1].seller == msg.sender) {
                     
                     uint currentId = idMarketItem[i + 1];
                     MarketItem storage currentItem = idMarketItem[currentId];
@@ -160,5 +196,8 @@ contract nftMarket is ReentrancyGuard {
             }
             return items;
         }
+
+        ///
+        function
 }
 
