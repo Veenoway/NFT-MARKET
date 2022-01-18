@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract nft is ERC721URIStorage {
     // auto increment fieald for each token
-    using Counter for Counters.Counter;
+    using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     //address of the nft market place
@@ -22,7 +22,7 @@ contract nft is ERC721URIStorage {
     /// @param tokenURI : token URI
     function createToken(string memory tokenURI) public returns(uint) {
         // set a new token id for the token to be minted
-        _tokensIds.increment(); // 0, 1, 2 etc...
+        _tokenIds.increment(); // 0, 1, 2 etc...
         uint newItemId = _tokenIds.current();
 
         _mint(msg.sender, newItemId); // mint the token
